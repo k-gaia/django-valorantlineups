@@ -31,23 +31,23 @@ class Agent(models.Model):
 
 class Lineup(models.Model):
     name = models.CharField(max_length=32)
-    xPos = models.IntegerField(max_length=255)
-    yPos = models.IntegerField(max_length=255)
-    childPinAmount = models.IntegerField(max_length=255)
+    xPos = models.IntegerField()
+    yPos = models.IntegerField()
+    childPinAmount = models.IntegerField()
 
     # can use JSONField as a list -> https://stackoverflow.com/questions/40241014/django-jsonfield-contains-list-of-values
-    childPinIds = models.JSONField(maxsize=255)
+    childPinIds = models.JSONField()
 
     isAttacking = models.BooleanField()
-    rating = models.FloatField(max_length=255)
+    rating = models.FloatField()
     createdOn = models.DateTimeField(max_length=10)
     author = models.CharField(max_length=64)
 
 class ChildLineup(models.Model):
     name = models.CharField(max_length=32)
-    xPos = models.IntegerField(max_length=255)
-    yPos = models.IntegerField(max_length=255)
+    xPos = models.IntegerField()
+    yPos = models.IntegerField()
 
 class Map(models.Model):
     name = models.CharField(max_length=32)
-    numLineups = xPos = models.IntegerField(max_length=255)
+    numLineups = models.IntegerField()
