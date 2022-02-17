@@ -184,6 +184,50 @@ function calloutEnabler(){
     }
 }
 
+var jData = "waiting";
+
+function makePin(x, y, i){
+
+    const newMarker = L.marker([x, y], {icon: new ValorantIcon({iconUrl: "static/img/abilityIcons/" + jData[i].fields.ability +".webp"  })}).addTo(mainPinGroup);
+
+}
+
+function mapPins(curMap){
+    for (let i = 0, len = jData.length; i < len; i++){
+        //console.log(jData[i].fields.map);
+        if (jData[i].fields.map == curMap){
+
+            makePin(jData[i].fields.xPos, jData[i].fields.yPos, i);
+
+        }
+
+    }
+
+}
+
+function hereData(data){
+    jData = JSON.parse(data['Lineups'])
+    console.log(JSON.parse(data['Lineups']))
+    //jData = data;
+
+}
+
+async function retrievePins(){
+
+
+    alert("running");
+    await $.ajax({
+        url: '/lineups_list',
+        datatype: 'json',
+        type: 'GET',
+        success: hereData,
+    });
+
+    mapPins("HA")
+
+
+}
+
 // init leaflet map
 var map = L.map('map', {
     crs: L.CRS.Simple,
@@ -201,3 +245,8 @@ var bounds = [[0,0], [4096,4096]];
 loadPins();
 
 map.fitBounds(bounds);
+
+retrievePins();
+
+//alert(jData[0].fields.xPos);
+//makePin(jData[0].fields.xPos, jData[0].fields.yPos);
