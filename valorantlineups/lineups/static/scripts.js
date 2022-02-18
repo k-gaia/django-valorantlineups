@@ -45,6 +45,7 @@ var LineupIcon = L.Icon.extend({
 // change champ function called on button press -> string formatting
 function changeChamp(champSelection){
 
+    /*
     abilityFilter = false;
 
     // change current champ variable
@@ -82,7 +83,14 @@ function changeChamp(champSelection){
     // reset pins each load (change champ)
     mainPinGroup.clearLayers();
     childPinGroup.clearLayers();
-    loadPins();
+    loadPins();*/
+    
+
+    mainPinGroup.clearLayers();
+    childPinGroup.clearLayers();
+    mapPins(viewedMap, champSelection)
+    console.log(viewedMap + " " + champSelection)
+
 }
 
 // change ability function (called when abilities are filtered)
@@ -186,18 +194,67 @@ function calloutEnabler(){
 
 var jData = "waiting";
 
-function makePin(x, y, i){
+function makePin(x, y, i, cIds){
 
     const newMarker = L.marker([x, y], {icon: new ValorantIcon({iconUrl: "static/img/abilityIcons/" + jData[i].fields.ability +".webp"  })}).addTo(mainPinGroup);
 
+    newMarker.on('click', function (e) {
+
+        // reset all current child pins so that no other child pins are active
+        childPinGroup.clearLayers();
+
+        console.log(cIds)
+
+        for  (i = 0; i < cIds.length; i++){
+
+            if ( cLineups[i].pk = cIds[i] ) {
+                console.log("cLineups[i].pk: " + cLineups[i].pk)
+                console.log("cIds[i]: " + cIds[i])
+                console.log(cLineups[i+1].fields.name)
+
+                const newMarkerChild = L.marker([cLineups[i+1].fields.xPos, cLineups[i+1].fields.yPos], 
+                    {icon: new LineupIcon({iconUrl: "static/img/abilityIcons/pinImg.png" })}).addTo(childPinGroup);
+
+                    newMarkerChild.bindPopup('<iframe style="border-radius: 3%;" src=' + 
+                    cLineups[i+1].fields.content + 
+                    ' width="500" height="315" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>', 
+                    {keepInView: false,autoPan: false,closeButton: false,maxWidth: 1000});
+
+            }
+
+        }
+
+        /*
+        for (i = 0; i < cIds.length; i++){
+
+            // make new child pin
+            const newMarkerChild = L.marker([], {icon: new LineupIcon({iconUrl: "static/img/abilityIcons/pinImg.png" })}).addTo(childPinGroup);
+            
+            newMarkerChild.bindPopup('<iframe style="border-radius: 3%;" src=' + newMarkerChildren[i][3] + ' width="500" height="315" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>', 
+            {keepInView: false,autoPan: false,closeButton: false,maxWidth: 1000});
+
+        }*/
+
+    })
+
 }
 
-function mapPins(curMap){
+function mapPins(curMap, curAgent){
     for (let i = 0, len = jData.length; i < len; i++){
         //console.log(jData[i].fields.map);
-        if (jData[i].fields.map == curMap){
+        if (jData[i].fields.map == curMap && jData[i].fields.character == curAgent){
 
-            makePin(jData[i].fields.xPos, jData[i].fields.yPos, i);
+            var childLineupIds = [];
+
+            for (let j = 0; j < jData[i].fields.childPinIds.ids.length; j++){
+
+                childLineupIds.push(jData[i].fields.childPinIds.ids[j].id)
+
+            }
+
+            console.log(childLineupIds)
+
+            makePin(jData[i].fields.xPos, jData[i].fields.yPos, i, childLineupIds);
 
         }
 
@@ -223,7 +280,19 @@ async function retrievePins(){
         success: hereData,
     });
 
-    mapPins("HA")
+    await $.ajax({
+        url: '/child_lineups_list',
+        datatype: 'json',
+        type: 'GET',
+        success: function (response){
+
+            cLineups = JSON.parse(response['Child Lineups'])
+            console.log(JSON.parse(response['Child Lineups']))
+
+        },
+    });
+
+    //mapPins("HA", "SA")
 
 
 }

@@ -6,6 +6,7 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('bind', views.bind, name='bind'),
     path('haven', views.haven, name='haven'),
-    path('lineups_list', views.lineups_list, name='lineups_list')
+    path('lineups_list', views.lineups_list, name='lineups_list'),
+    path('child_lineups_list', views.child_lineups_list, name = 'child_lineups_list')
 
 ]
