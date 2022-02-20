@@ -60,30 +60,27 @@ class Maps(models.TextChoices):
 
 
 class Lineup(models.Model):
-    name = models.CharField(max_length=32)
-    map = models.CharField(max_length=16, choices=Maps.choices)
-    character = models.CharField(max_length=64, choices=Agents.choices)
-    ability = models.CharField(max_length=64)
-    xPos = models.IntegerField()
-    yPos = models.IntegerField()
-    childPinAmount = models.IntegerField()
+    name = models.CharField(max_length=32, null=True, blank=True)
+    map = models.CharField(max_length=16, choices=Maps.choices, null=True, blank=True)
+    character = models.CharField(max_length=64, choices=Agents.choices, null=True, blank=True)
+    ability = models.CharField(max_length=64, null=True, blank=True)
+    xPos = models.IntegerField(null=True, blank=True)
+    yPos = models.IntegerField(null=True, blank=True)
+    childPinAmount = models.IntegerField(null=True, blank=True)
 
     # can use JSONField as a list -> https://stackoverflow.com/questions/40241014/django-jsonfield-contains-list-of-values
-    childPinIds = models.JSONField()
+    childPinIds = models.JSONField(null=True, blank=True)
 
-    isAttacking = models.BooleanField()
-    rating = models.FloatField()
-    createdOn = models.DateTimeField(max_length=10)
-    author = models.CharField(max_length=64)
-
-    def __str__(self):
-        return self.map + " - " + self.name + " - " + self.character + " - " + self.ability  + " - " + str(self.rating)
+    isAttacking = models.BooleanField(null=True, blank=True)
+    rating = models.FloatField(null=True, blank=True)
+    createdOn = models.DateTimeField(max_length=10, null=True, blank=True)
+    author = models.CharField(max_length=64, null=True, blank=True)
 
 class ChildLineup(models.Model):
-    name = models.CharField(max_length=32)
-    content = models.URLField()
-    xPos = models.IntegerField()
-    yPos = models.IntegerField()
+    name = models.CharField(max_length=32, blank=True)
+    content = models.URLField(blank=True)
+    xPos = models.IntegerField(blank=True)
+    yPos = models.IntegerField(blank=True)
 
     def __str__(self):
         return str(self.id) + " - " + self.name + " - " + self.content + " - " + str(self.xPos) + " - " + str(self.yPos)
