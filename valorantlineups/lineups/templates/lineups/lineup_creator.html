@@ -20,9 +20,58 @@
     <body>
 
 
-        <div id='map'></div>
+        <div id='map'>
+
+            <div style="position:absolute;">
+                <form method="POST">
+                    {% csrf_token %}
+                    <label for="Champ">Champ:</label><br>
+                    <input type="text" id="champname" name="character">
+    
+                    <label for="Ability">Ability:</label><br>
+                    <input type="text" id="abilityname" name="ability">
+    
+                    <label for="Lineup_Name">Lineup Name:</label><br>
+                    <input type="text" id="lineupname" name="name">
+    
+                    <label for="X-Pos">X-Pos:</label><br>
+                    <input type="number" id="xpos" name="xPos"><br>
+    
+                    <label for="Y-Pos">Y-Pos:</label><br>
+                    <input type="number" id="ypos" name="yPos">
+    
+                    <label for="Map">Map:</label><br>
+                    <input type="text" id="curmap" name="map">
+    
+                    <label for="Child_Pin_Amount">Child Pin Amount:</label><br>
+                    <input type="number" id="childpinamount" name="childPinAmount">
+    
+                    <label for="Child_Pin_Ids">Child Pin IDs:</label><br>
+                    <input type="number" id="childpinids" name="childPinIds">
+    
+                    <label for="Is_Attacking">Is Attacking:</label><br>
+                    <input type="checkbox" id="isattacking" name="isAttacking">
+    
+                    <label for="rating">Rating:</label><br>
+                    <input type="number" id="rating" name="rating">
+    
+                    <label for="Created_On">Created On:</label><br>
+                    <input type="date" id="createdon" name="createdOn">
+    
+                    <label for="Author">Author:</label><br>
+                    <input type="text" id="author" name="author">
+    
+                    
+    
+                    <button type="submit" onclick="submitPins()" class="btn btn-primary">Submit</button>
+    
+                </form> 
+            </div>
+
+
+        </div>
         
-        <!--
+        
         <label for="show-menu" class="show-menu">Show Menu</label>
         <ul id="mapmenu">
         <li>
@@ -33,7 +82,7 @@
                 <li><button onclick="changeMap('Ascent')">Ascent</button></li>
             </ul>
         </li>
-    </ul>-->
+    </ul>
 
 
         <div id='agentInfoDiv'>
@@ -52,58 +101,14 @@
             <option>Main Pin</option>
             <option>Child Pin</option>
         
-        </select>
-
-        <div class="leaflet-top leaflet-right">
-            <form method="POST">
-                {% csrf_token %}
-                <label for="Champ">Champ:</label><br>
-                <input type="text" id="champname" name="character">
-
-                <label for="Ability">Ability:</label><br>
-                <input type="text" id="abilityname" name="ability">
-
-                <label for="Lineup_Name">Lineup Name:</label><br>
-                <input type="text" id="lineupname" name="name">
-
-                <label for="X-Pos">X-Pos:</label><br>
-                <input type="number" id="xpos" name="xPos"><br>
-
-                <label for="Y-Pos">Y-Pos:</label><br>
-                <input type="number" id="ypos" name="yPos">
-
-                <label for="Map">Map:</label><br>
-                <input type="text" id="map" name="map">
-
-                <label for="Child_Pin_Amount">Child Pin Amount:</label><br>
-                <input type="number" id="childpinamount" name="childPinAmount">
-
-                <label for="Child_Pin_Ids">Child Pin IDs:</label><br>
-                <input type="number" id="childpinids" name="childPinIds">
-
-                <label for="Is_Attacking">Is Attacking:</label><br>
-                <input type="checkbox" id="isattacking" name="isAttacking">
-
-                <label for="rating">Rating:</label><br>
-                <input type="number" id="rating" name="rating">
-
-                <label for="Created_On">Created On:</label><br>
-                <input type="date" id="createdon" name="createdOn">
-
-                <label for="Author">Author:</label><br>
-                <input type="text" id="author" name="author">
-
-                
-
-                <button type="submit" class="btn btn-primary">Submit</button>
-
-            </form> 
-        </div>
+        </select>    
 
         <script src="static/pins/bindPins.js"></script>
         <script src="static/scripts.js"></script> 
 
         <script>
+
+            var viewedMap = "Bind"
 
             var drawingPins = false;
             
@@ -147,7 +152,7 @@
     
             // change map function (called each time map is clicked)
             function changeMap(mapRadio) {
-    
+                viewedMap = mapRadio;
                 map.removeLayer(image);
     
                 // the map image
@@ -208,6 +213,18 @@
                 document.getElementById('champname').value = document.getElementById('champs').value
                 document.getElementById('abilityname').value = document.getElementById('abilities').value
                 document.getElementById('lineupname').value = pinName
+                document.getElementById('curmap').value = viewedMap
+                console.log(viewedMap)
+                document.getElementById('childpinamount').value = features[3].length
+                /*document.getElementById('childpinids').value = ajax request */
+                /*document.getElementById('isattacking').value = just a checkbox?*/
+                /*document.getElementById('rating').value = not setable at creation*/
+                document.getElementById('createdon').value = new Date().toISOString().substring(0, 10)
+                console.log(new Date().toISOString().substring(0, 10))
+                /*document.getElementById('author').value = get user from django*/
+                console.log(latestPinId)
+
+
 
     
                 
@@ -218,21 +235,8 @@
     
                 mainPinGroup.clearLayers();
                 childPinGroup.clearLayers();
+                submitPins();
 
-                /*
-                $.ajax({
-                    url: '/lineups_list' ,
-                    dataType: "json",
-                    type: "POST",
-                    data:{
-                        data: "Test",
-                        csrfmiddlewaretoken: "{{ csrf_token }}",
-
-                    },
-                    success: function(data){
-                        console.log(data)
-                    }
-                    })*/
     
             }
     
@@ -289,7 +293,45 @@
                     });
                 }
                 });
+
+                function setLatestPinId(data){
+                    latestPinId = data.substr(0,data.indexOf(' -'));
+                    console.log(latestPinId)
+                }
+
+                async function getLatestPin(){
+                    await $.ajax({
+                        url: '/latest_child_id' ,
+                        dataType: "html",
+                        type: "GET",
+                        success: setLatestPinId,
+                    })
+                 };
+
+                function submitPins(){
+
+                    console.log("submitpins")
+
+                    var values = {
+
+                        test : "test"
+
+                    };
+
+                    $.ajax({
+                        url: "/pin_creator",
+                        type: "POST",
+                        data: {
+                            pinValues : values,
+                            csrfmiddlewaretoken : '{{ csrf_token }}'
+                        },
+                    });
+                } 
+
     
+                 getLatestPin();
+                 
+
         </script>
         
 
