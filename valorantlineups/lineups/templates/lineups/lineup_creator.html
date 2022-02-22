@@ -20,60 +20,10 @@
     <body>
 
 
-        <div id='map'>
-
-            <div style="position:absolute;">
-                <form method="POST">
-                    {% csrf_token %}
-                    <label for="Champ">Champ:</label><br>
-                    <input type="text" id="champname" name="character">
-    
-                    <label for="Ability">Ability:</label><br>
-                    <input type="text" id="abilityname" name="ability">
-    
-                    <label for="Lineup_Name">Lineup Name:</label><br>
-                    <input type="text" id="lineupname" name="name">
-    
-                    <label for="X-Pos">X-Pos:</label><br>
-                    <input type="number" id="xpos" name="xPos"><br>
-    
-                    <label for="Y-Pos">Y-Pos:</label><br>
-                    <input type="number" id="ypos" name="yPos">
-    
-                    <label for="Map">Map:</label><br>
-                    <input type="text" id="curmap" name="map">
-    
-                    <label for="Child_Pin_Amount">Child Pin Amount:</label><br>
-                    <input type="number" id="childpinamount" name="childPinAmount">
-    
-                    <label for="Child_Pin_Ids">Child Pin IDs:</label><br>
-                    <input type="number" id="childpinids" name="childPinIds">
-    
-                    <label for="Is_Attacking">Is Attacking:</label><br>
-                    <input type="checkbox" id="isattacking" name="isAttacking">
-    
-                    <label for="rating">Rating:</label><br>
-                    <input type="number" id="rating" name="rating">
-    
-                    <label for="Created_On">Created On:</label><br>
-                    <input type="date" id="createdon" name="createdOn">
-    
-                    <label for="Author">Author:</label><br>
-                    <input type="text" id="author" name="author">
-    
-                    
-    
-                    <button type="submit" onclick="submitPins()" class="btn btn-primary">Submit</button>
-    
-                </form> 
-            </div>
-
-
-        </div>
-        
-        
-        <label for="show-menu" class="show-menu">Show Menu</label>
-        <ul id="mapmenu">
+    <div id='map'></div>
+                
+    <label for="show-menu" class="show-menu">Show Menu</label>
+    <ul id="mapmenu">
         <li>
             <ul class="hidden"></ul>
                 <li><button onclick="changeMap('Bind')">Bind</button></li>
@@ -84,257 +34,287 @@
         </li>
     </ul>
 
+    <div id='agentInfoDiv'>
+        <img id='agentImg' src="static/img/champIcons/Breach_icon.webp" width="100px" style="position: absolute; top: 4.5%; left: 20%; border: solid 5px black; background-color: rgba(0, 0, 0, 0.5) " draggable="false">
+        <p id='agentText' style="position: absolute; top: 14%; left: 19.9%; font-family: 'Josefin Sans', sans-serif; font-size: 32px; color: white;">Breach</p>
+    </div>  
 
-        <div id='agentInfoDiv'>
-            <img id='agentImg' src="static/img/champIcons/Breach_icon.webp" width="100px" style="position: absolute; top: 4.5%; left: 20%; border: solid 5px black; background-color: rgba(0, 0, 0, 0.5) " draggable="false">
-            <p id='agentText' style="position: absolute; top: 14%; left: 19.9%; font-family: 'Josefin Sans', sans-serif; font-size: 32px; color: white;">Breach</p>
-        </div>  
-
-        <button onclick="capturePins()" style="position: absolute; bottom: 0; right: 10vw;"> Capture Pin </button>
-        <button onclick="enableDraw()" style="position: absolute; bottom: 0px; right: 5vw;"> Draw Pins </button>
-        <button onclick="clearPins(), clearChildPins()" style="position: absolute; bottom: 0px; right: 15vw;"> Clear All Pins </button>
-        <button onclick="clearChildPins()" style="position: absolute; bottom: 0px; right: 20.4vw;"> Clear Child Pins </button>
-        <select id="champs" onchange="updateAbilities()" style="position: absolute; bottom: 0px; left: 5%;"></select>
-        <select id="abilities" style="position: absolute; bottom: 0px; left: 10%;"></select>
-        <select id='pinType' style="position: absolute; bottom: 0px; left: 0%;">
+    <button onclick="capturePins()" style="position: absolute; bottom: 0; right: 10vw;"> Capture Pin </button>
+    <button onclick="enableDraw()" style="position: absolute; bottom: 0px; right: 5vw;"> Draw Pins </button>
+    <button onclick="clearPins(), clearChildPins()" style="position: absolute; bottom: 0px; right: 15vw;"> Clear All Pins </button>
+    <button onclick="clearChildPins()" style="position: absolute; bottom: 0px; right: 20.4vw;"> Clear Child Pins </button>
+    <select id="champs" onchange="updateAbilities()" style="position: absolute; bottom: 0px; left: 5%;"></select>
+    <select id="abilities" style="position: absolute; bottom: 0px; left: 10%;"></select>
+    <select id='pinType' style="position: absolute; bottom: 0px; left: 0%;">
         
-            <option>Main Pin</option>
-            <option>Child Pin</option>
+        <option>Main Pin</option>
+        <option>Child Pin</option>
         
-        </select>    
+    </select>    
 
-        <script src="static/pins/bindPins.js"></script>
-        <script src="static/scripts.js"></script> 
+    <script src="static/pins/bindPins.js"></script>
+    <script src="static/scripts.js"></script> 
 
-        <script>
+    <script>
 
-            var viewedMap = "Bind"
+    var viewedMap = "Bind"
 
-            var drawingPins = false;
+    var drawingPins = false;
+    
+    var image = L.imageOverlay('static/img/maps/Bind_Top_Down_View_up.png', bounds).addTo(map);
+
+    // enable draw function to flip boolean
+    function enableDraw(){
+        if (drawingPins == false) {
+
+            drawingPins = true;
+
+        }
+
+        else {
+
+            drawingPins = false;
+
+        }
+    }
+
+    function updateAbilities(){
+
+        // get drop downs
+        var champDrop = document.getElementById('champs');
+        var abilityDrop = document.getElementById('abilities');
+
+        // clear abilities from previous champ
+        for (i = 0; i < 4; i++){
+
+            abilityDrop.remove(abilityDrop[i]); 
+        }
+
+        // add abilities for champs in drop downs
+        for (i = 0; i < 4; i++){
+
+            var option = document.createElement("option");
+            option.text = abilities[champDrop.selectedIndex][i];
+            abilityDrop.add(option); 
+        }
+    }
+
+    // change map function (called each time map is clicked)
+    function changeMap(mapRadio) {
+        viewedMap = mapRadio;
+        map.removeLayer(image);
+
+        // the map image
+        image = L.imageOverlay('static/img/maps/' + mapRadio + '_Top_Down_View_up.png', bounds).addTo(map);
+
+        
+    }
+
+    function captureChildPins(){
+        var childFeatures = [];
+        childPinGroup.eachLayer( function(layer) {
+            if(layer instanceof L.Marker) {
+            if(map.getBounds().contains(layer.getLatLng())) {
+                childFeatures.push([ + layer.getLatLng().lat, layer.getLatLng().lng, "'" + prompt("Enter Lineup Name") + "'", "'" + prompt("Enter Video URL") + "'"]);
+                }
+            }
+        });
+
+        return childFeatures;
+
+    }
+
+
+    function capturePins(){
+
+        var features = [];
+
+        // get pins name, and add to pinToSave output 
+        const pinName = prompt("Enter pin name: ");
+
+        mainPinGroup.eachLayer( function(layer) {
+            if(layer instanceof L.Marker) {
+            if(map.getBounds().contains(layer.getLatLng())) {
+                features.push(layer.getLatLng().lat, layer.getLatLng().lng, 
+                layer._icon.src.replace("static/img/abilityIcons/", '').replace(".webp", ''),
+                captureChildPins()
+            );
+            }
+            }
+        });
+
+        //return features;
+        console.log(features);
+        alert("['" + document.getElementById('champs').value + "', '"
+        + document.getElementById('abilities').value + "', '"
+        + features[0] + "', '"
+        + features[1] + "', '"
+        + pinName + "', "
+        + "[" + features[3] + "]"
+        + "]");
+
+        var pinIds = {"ids":[]};
+
+        for (var i = parseInt(latestPinId)+1; i <= parseInt(latestPinId) + features[3].length; i++){
+
+            pinIds.ids.push({"id" : i})
+
+        }
+        // console.log(pinIds);
+        // console.log("Features[3]:" + features[3])
+        // console.log("Features[3].length:" + features[3].length)
+        /*document.getElementById('isattacking').value = just a checkbox?*/
+        /*document.getElementById('rating').value = not setable at creation*/
+        //document.getElementById('createdon').value = new Date().toISOString().substring(0, 10)
+        //console.log(new Date().toISOString().substring(0, 10))
+        /*document.getElementById('author').value = get user from django*/
+        //console.log(latestPinId)
+
+        submitLineup(features, pinName, pinIds)
+        
+    }
+
+    function clearPins(){
+        mainPinGroup.clearLayers();
+        childPinGroup.clearLayers();    
+    }
+
+    function clearChildPins(){
+        childPinGroup.clearLayers();
+    }
+
+    // on load function -> sets up on click events for pin creation
+    window.onload = function () {
+
+        // get champ drop down selector
+
+        if (document.getElementById('champs')){
+
+            // get champ dropdown
+            var champDrop = document.getElementById('champs');
+
+            // iterate through champ array and add to drop down
+            for (i = 0; i < this.champs.length; i++){
+                var option = document.createElement("option");
+                option.text = champs[i];
+                champDrop.add(option); 
+            }  
+        }
+    }
+
+    // setup for pin creation
+    map.on('click', 
+    function(e){
+        if (drawingPins){
+            var coord = e.latlng.toString().split(',');
+            var lat = coord[0].split('(');
+            var lng = coord[1].split(')');
+
+            alert("You clicked the map at LAT: " + lat[1] + " and LONG: " + lng[0]);
+
+            if (document.getElementById("pinType").value == "Child Pin"){
+                newMarker = L.marker(e.latlng, {draggable: true, icon: new LineupIcon({iconUrl: "static/img/abilityIcons/pinImg.png" })}).addTo(childPinGroup);
+            }
+            else {
+                newMarker = L.marker(e.latlng, {draggable: true, icon: new ValorantIcon({iconUrl: "static/img/abilityIcons/" + document.getElementById("abilities").value + ".webp" })}).addTo(mainPinGroup);
+            }
+            newMarker.on('dragend', function() {
+                var coord = String(newMarker.getLatLng()).split(',');
+                //console.log(coord);
+                var lat = coord[0].split('(');
+                //console.log(lat);
+                var lng = coord[1].split(')');
+                //console.log(lng);
+                newMarker.bindPopup("Moved to: " + lat[1] + ", " + lng[0] + ".");
+            });
+        }
+        });
+
+        function setLatestPinId(data){
+            latestPinId = data.substr(0,data.indexOf(' -'));
+            console.log(latestPinId)
+        }
+
+        async function getLatestPin(){
+            await $.ajax({
+                url: '/latest_child_id' ,
+                dataType: "html",
+                type: "GET",
+                error: function(){
+
+                    latestPinId = 0
+
+                },
+                success: setLatestPinId,
+            })
+            };
+
+        function submitLineup(features, pinName, pinIds){
             
-            var image = L.imageOverlay('static/img/maps/Bind_Top_Down_View_up.png', bounds).addTo(map);
-    
-            // enable draw function to flip boolean
-            function enableDraw(){
-                if (drawingPins == false) {
-    
-                    drawingPins = true;
-    
-                }
-    
-                else {
-    
-                    drawingPins = false;
-    
-                }
+            character = document.getElementById('champs').value
+            ability = document.getElementById('abilities').value
+            name = pinName
+            xPos = features[0]
+            yPos = features[1]
+            map = viewedMap
+            childPinAmount = features[3].length
+            console.log(pinIds)
+            childPinIds = JSON.stringify(pinIds)
+            //isAttacking = checkbox
+            //rating = not settable at creation
+            createdOn = new Date().toISOString().substring(0, 10)
+            //author = get user from django
+
+            $.ajax({
+                url: "/lineup_creator",
+                type: "POST",
+                data: {
+                    character,
+                    ability,
+                    name,
+                    xPos,
+                    yPos,
+                    map,
+                    childPinAmount,
+                    childPinIds,
+                    //isAttacking,
+                    //rating,
+                    createdOn,
+                    //author,
+                    csrfmiddlewaretoken : '{{ csrf_token }}'
+                },
+            });
+
+            for (let i = 0; i < features[3].length; i++){
+                submitPins(features[3][i][2], features[3][i][3],
+                features[3][i][0], features[3][i][1])
             }
-    
-            function updateAbilities(){
-    
-                // get drop downs
-                var champDrop = document.getElementById('champs');
-                var abilityDrop = document.getElementById('abilities');
-    
-                // clear abilities from previous champ
-                for (i = 0; i < 4; i++){
-    
-                    abilityDrop.remove(abilityDrop[i]); 
-                }
-    
-                // add abilities for champs in drop downs
-                for (i = 0; i < 4; i++){
-    
-                    var option = document.createElement("option");
-                    option.text = abilities[champDrop.selectedIndex][i];
-                    abilityDrop.add(option); 
-                }
-            }
-    
-            // change map function (called each time map is clicked)
-            function changeMap(mapRadio) {
-                viewedMap = mapRadio;
-                map.removeLayer(image);
-    
-                // the map image
-                image = L.imageOverlay('static/img/maps/' + mapRadio + '_Top_Down_View_up.png', bounds).addTo(map);
-    
-              
-            }
-    
-            function captureChildPins(){
-                var childFeatures = [];
-                childPinGroup.eachLayer( function(layer) {
-                    if(layer instanceof L.Marker) {
-                    if(map.getBounds().contains(layer.getLatLng())) {
-                        childFeatures.push("[" + layer.getLatLng().lat, layer.getLatLng().lng, "'" + prompt("Enter Lineup Name") + "'", "'" + prompt("Enter Video URL") + "']");
-                        }
-                    }
-                });
-    
-                return childFeatures;
-    
-            }
-    
-    
-            function capturePins(){
-    
-                var features = [];
-    
-                // get pins name, and add to pinToSave output 
-                const pinName = prompt("Enter pin name: ");
-    
-                mainPinGroup.eachLayer( function(layer) {
-                    if(layer instanceof L.Marker) {
-                    if(map.getBounds().contains(layer.getLatLng())) {
-                        features.push(layer.getLatLng().lat, layer.getLatLng().lng, 
-                        layer._icon.src.replace("static/img/abilityIcons/", '').replace(".webp", ''),
-                        captureChildPins()
-                    );
-                    }
-                    }
-                });
-    
-                //return features;
-                console.log(features);
-                alert("['" + document.getElementById('champs').value + "', '"
-                + document.getElementById('abilities').value + "', '"
-                + features[0] + "', '"
-                + features[1] + "', '"
-                + pinName + "', "
-                + "[" + features[3] + "]"
-                +  
-                
-                
-                
-                "]");
+        }
 
-                document.getElementById('xpos').value = features[0]
-                document.getElementById('ypos').value = features[1]
-                document.getElementById('champname').value = document.getElementById('champs').value
-                document.getElementById('abilityname').value = document.getElementById('abilities').value
-                document.getElementById('lineupname').value = pinName
-                document.getElementById('curmap').value = viewedMap
-                console.log(viewedMap)
-                document.getElementById('childpinamount').value = features[3].length
-                /*document.getElementById('childpinids').value = ajax request */
-                /*document.getElementById('isattacking').value = just a checkbox?*/
-                /*document.getElementById('rating').value = not setable at creation*/
-                document.getElementById('createdon').value = new Date().toISOString().substring(0, 10)
-                console.log(new Date().toISOString().substring(0, 10))
-                /*document.getElementById('author').value = get user from django*/
-                console.log(latestPinId)
+        function submitPins(_name, _content, _xPos, _yPos){
+            name = _name
+            content = _content.replace("'", "")
+            xPos = _xPos
+            yPos = _yPos
 
+            console.log(content)
 
-
-    
-                
-            }
-    
-    
-            function clearPins(){
-    
-                mainPinGroup.clearLayers();
-                childPinGroup.clearLayers();
-                submitPins();
-
-    
-            }
-    
-            function clearChildPins(){
-    
-                childPinGroup.clearLayers();
-    
-            }
-    
-    
-            // on load function -> sets up on click events for pin creation
-            window.onload = function () {
-    
-                // get champ drop down selector
-    
-                if (document.getElementById('champs')){
-    
-                    // get champ dropdown
-                    var champDrop = document.getElementById('champs');
-    
-                    // iterate through champ array and add to drop down
-                    for (i = 0; i < this.champs.length; i++){
-                        var option = document.createElement("option");
-                        option.text = champs[i];
-                        champDrop.add(option); 
-                    }  
-                }
-            }
-
-                    // setup for pin creation
-            map.on('click', 
-            function(e){
-                if (drawingPins){
-                    var coord = e.latlng.toString().split(',');
-                    var lat = coord[0].split('(');
-                    var lng = coord[1].split(')');
-
-                    alert("You clicked the map at LAT: " + lat[1] + " and LONG: " + lng[0]);
-
-                    if (document.getElementById("pinType").value == "Child Pin"){
-                        newMarker = L.marker(e.latlng, {draggable: true, icon: new LineupIcon({iconUrl: "static/img/abilityIcons/pinImg.png" })}).addTo(childPinGroup);
-                    }
-                    else {
-                        newMarker = L.marker(e.latlng, {draggable: true, icon: new ValorantIcon({iconUrl: "static/img/abilityIcons/" + document.getElementById("abilities").value + ".webp" })}).addTo(mainPinGroup);
-                    }
-                    newMarker.on('dragend', function() {
-                        var coord = String(newMarker.getLatLng()).split(',');
-                        //console.log(coord);
-                        var lat = coord[0].split('(');
-                        //console.log(lat);
-                        var lng = coord[1].split(')');
-                        //console.log(lng);
-                        newMarker.bindPopup("Moved to: " + lat[1] + ", " + lng[0] + ".");
-                    });
-                }
-                });
-
-                function setLatestPinId(data){
-                    latestPinId = data.substr(0,data.indexOf(' -'));
-                    console.log(latestPinId)
-                }
-
-                async function getLatestPin(){
-                    await $.ajax({
-                        url: '/latest_child_id' ,
-                        dataType: "html",
-                        type: "GET",
-                        success: setLatestPinId,
-                    })
-                 };
-
-                function submitPins(){
-
-                    console.log("submitpins")
-
-                    var values = {
-
-                        test : "test"
-
-                    };
-
-                    $.ajax({
-                        url: "/pin_creator",
-                        type: "POST",
-                        data: {
-                            pinValues : values,
-                            csrfmiddlewaretoken : '{{ csrf_token }}'
-                        },
-                    });
-                } 
-
-    
-                 getLatestPin();
-                 
-
-        </script>
+            $.ajax({
+                url: "/pin_creator",
+                type: "POST",
+                data: {
+                    name,
+                    content,
+                    xPos,
+                    yPos,
+                    csrfmiddlewaretoken : '{{ csrf_token }}'
+                },
+            });
+        } 
         
+    getLatestPin();                 
 
+    </script>
+    </body>
 
-    </body>    
 </html>

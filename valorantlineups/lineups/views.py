@@ -58,7 +58,10 @@ def child_lineups_list(request):
     return JsonResponse({"Child Lineups": child_lineup_data})
 
 def get_latest_childlineup_id(request):
-    latest = ChildLineup.objects.latest('id')
+    try:
+        latest = ChildLineup.objects.latest('id')
+    except:
+        print("db is empty")
 
     return HttpResponse(latest)
 

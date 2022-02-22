@@ -102,80 +102,11 @@ function changeAbility(selectedAbility){
 
     ability = selectedAbility;
 
-    loadPins();
     childPinGroup.clearLayers();
 
 }
 
-// load pins
-function loadPins(){
 
-    for (i = 0 ; i < pins.length; i++){       
-
-        // if correct champ selected, load said champ's pins
-        if (abilityFilter){
-            if (pins[i][0] == champ && pins[i][1] == ability){
-
-                // new marker -> i|0 -> champ, i|1 -> ability, i|2 -> x, i|3 -> y, i|4 -> pin note/name, i|5 child-pins
-                const newMarker = L.marker([pins[i][2], pins[i][3]], {icon: new ValorantIcon({iconUrl: "static/img/abilityIcons/" + pins[i][1] +".webp"  })}).addTo(mainPinGroup);
-                newMarker.bindPopup("<b> " + pins[i][4] + " </b>");
-
-                // store children pins in constant variable to allow multiple children across multiple pins
-                const newMarkerChildren = pins[i][5];
-
-                newMarker.on('click', function (e) {
-
-                    // reset all current child pins so that no other child pins are active
-                    childPinGroup.clearLayers();
-
-                    for (i = 0; i < newMarkerChildren.length; i++){
-                        
-                        // make new child pin
-                        const newMarkerChild = L.marker([newMarkerChildren[i][0],newMarkerChildren[i][1]], {icon: new LineupIcon({iconUrl: "static/img/abilityIcons/pinImg.png" })}).addTo(childPinGroup);
-                        
-                        newMarkerChild.bindPopup('<iframe style="border-radius: 3%;" src=' + newMarkerChildren[i][3] + ' width="500" height="315" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>', 
-                        {keepInView: false,autoPan: false,closeButton: false,maxWidth: 1000});
-
-
-                    }
-
-                })
-            }
-
-        } else {
-
-            if (pins[i][0] == champ){
-
-                // new marker -> i|0 -> champ, i|1 -> ability, i|2 -> x, i|3 -> y, i|4 -> pin note/name, i|5 child-pins
-                const newMarker = L.marker([pins[i][2], pins[i][3]], {icon: new ValorantIcon({iconUrl: "static/img/abilityIcons/" + pins[i][1] +".webp"  })}).addTo(mainPinGroup);
-                newMarker.bindPopup("<b> " + pins[i][4] + " </b>");
-
-                // store children pins in constant variable to allow multiple children across multiple pins
-                const newMarkerChildren = pins[i][5];
-
-                newMarker.on('click', function (e) {
-
-                    // reset all current child pins so that no other child pins are active
-                    childPinGroup.clearLayers();
-
-                    for (i = 0; i < newMarkerChildren.length; i++){
-                        
-                        // make new child pin
-                        const newMarkerChild = L.marker([newMarkerChildren[i][0],newMarkerChildren[i][1]], {icon: new LineupIcon({iconUrl: "static/img/abilityIcons/pinImg.png" })}).addTo(childPinGroup);
-                        
-                        newMarkerChild.bindPopup('<iframe style="border-radius: 3%;" src=' + newMarkerChildren[i][3] + ' width="500" height="315" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>', 
-                        {keepInView: false,autoPan: false,closeButton: false,maxWidth: 1000});
-
-
-                    }
-
-                })
-            }
-
-
-        }
-    }
-}
 
 // callout enabler to flip each time button pressed
 function calloutEnabler(){
@@ -196,6 +127,8 @@ var jData = "waiting";
 
 function makePin(x, y, i, cIds){
 
+    console.log("current childpin ids:" + cIds)
+
     const newMarker = L.marker([x, y], {icon: new ValorantIcon({iconUrl: "static/img/abilityIcons/" + jData[i].fields.ability +".webp"  })}).addTo(mainPinGroup);
 
     newMarker.on('click', function (e) {
@@ -203,37 +136,19 @@ function makePin(x, y, i, cIds){
         // reset all current child pins so that no other child pins are active
         childPinGroup.clearLayers();
 
-        console.log(cIds)
+        console.log("cIds Length: " + cIds.length)
 
-        for  (i = 0; i < cIds.length; i++){
+        for  (pin of cIds){
 
-            if ( cLineups[i].pk = cIds[i] ) {
-                console.log("cLineups[i].pk: " + cLineups[i].pk)
-                console.log("cIds[i]: " + cIds[i])
-                console.log(cLineups[i+1].fields.name)
+            const newMarkerChild = L.marker([cLineups[pin-1].fields.xPos, cLineups[pin-1].fields.yPos], 
+            {icon: new LineupIcon({iconUrl: "static/img/abilityIcons/pinImg.png" })}).addTo(childPinGroup);
 
-                const newMarkerChild = L.marker([cLineups[i+1].fields.xPos, cLineups[i+1].fields.yPos], 
-                    {icon: new LineupIcon({iconUrl: "static/img/abilityIcons/pinImg.png" })}).addTo(childPinGroup);
-
-                    newMarkerChild.bindPopup('<iframe style="border-radius: 3%;" src=' + 
-                    cLineups[i+1].fields.content + 
-                    ' width="500" height="315" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>', 
-                    {keepInView: false,autoPan: false,closeButton: false,maxWidth: 1000});
-
-            }
-
-        }
-
-        /*
-        for (i = 0; i < cIds.length; i++){
-
-            // make new child pin
-            const newMarkerChild = L.marker([], {icon: new LineupIcon({iconUrl: "static/img/abilityIcons/pinImg.png" })}).addTo(childPinGroup);
-            
-            newMarkerChild.bindPopup('<iframe style="border-radius: 3%;" src=' + newMarkerChildren[i][3] + ' width="500" height="315" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>', 
+            newMarkerChild.bindPopup('<iframe style="border-radius: 3%;" src=' + cLineups[pin-1].fields.content + 
+            ' width="500" height="315" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>', 
             {keepInView: false,autoPan: false,closeButton: false,maxWidth: 1000});
 
-        }*/
+
+        }
 
     })
 
@@ -241,7 +156,7 @@ function makePin(x, y, i, cIds){
 
 function mapPins(curMap, curAgent){
     for (let i = 0, len = jData.length; i < len; i++){
-        //console.log(jData[i].fields.map);
+
         if (jData[i].fields.map == curMap && jData[i].fields.character == curAgent){
 
             var childLineupIds = [];
@@ -250,15 +165,19 @@ function mapPins(curMap, curAgent){
 
                 childLineupIds.push(jData[i].fields.childPinIds.ids[j].id)
 
+                
+
             }
 
-            console.log(childLineupIds)
-
+            
             makePin(jData[i].fields.xPos, jData[i].fields.yPos, i, childLineupIds);
+            
 
         }
 
     }
+
+    console.log(childLineupIds)
 
 }
 
@@ -271,8 +190,6 @@ function hereData(data){
 
 async function retrievePins(){
 
-
-    alert("running");
     await $.ajax({
         url: '/lineups_list',
         datatype: 'json',
@@ -309,9 +226,6 @@ var mainPinGroup = L.layerGroup().addTo(map);
 var childPinGroup = L.layerGroup().addTo(map);
 
 var bounds = [[0,0], [4096,4096]];
-
-// load in pins 
-loadPins();
 
 map.fitBounds(bounds);
 
