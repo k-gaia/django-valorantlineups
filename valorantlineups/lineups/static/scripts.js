@@ -127,16 +127,14 @@ var jData = "waiting";
 
 function makePin(x, y, i, cIds){
 
-    console.log("current childpin ids:" + cIds)
-
-    const newMarker = L.marker([x, y], {icon: new ValorantIcon({iconUrl: "static/img/abilityIcons/" + jData[i].fields.ability +".webp"  })}).addTo(mainPinGroup);
+    const newMarker = L.marker([x, y], 
+        {icon: new ValorantIcon({iconUrl: "static/img/abilityIcons/" + 
+        jData[i].fields.ability +".webp"  })}).addTo(mainPinGroup);
 
     newMarker.on('click', function (e) {
 
         // reset all current child pins so that no other child pins are active
         childPinGroup.clearLayers();
-
-        console.log("cIds Length: " + cIds.length)
 
         for  (pin of cIds){
 
@@ -146,12 +144,8 @@ function makePin(x, y, i, cIds){
             newMarkerChild.bindPopup('<iframe style="border-radius: 3%;" src=' + cLineups[pin-1].fields.content + 
             ' width="500" height="315" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>', 
             {keepInView: false,autoPan: false,closeButton: false,maxWidth: 1000});
-
-
         }
-
     })
-
 }
 
 function mapPins(curMap, curAgent){
