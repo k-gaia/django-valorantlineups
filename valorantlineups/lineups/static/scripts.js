@@ -125,22 +125,29 @@ function calloutEnabler(){
 
 var jData = "waiting";
 
+//x: x position, y: y position, i current iteration through lineups array (retrieved from db)
+//cIds: Child-Pin IDs
 function makePin(x, y, i, cIds){
 
+    // new marker object, what will be placed on the map.
     const newMarker = L.marker([x, y], 
         {icon: new ValorantIcon({iconUrl: "static/img/abilityIcons/" + 
         jData[i].fields.ability +".webp"  })}).addTo(mainPinGroup);
 
+    // on click for marker, responsible for displaying the child pins (i.e. the actual lineup)
     newMarker.on('click', function (e) {
 
         // reset all current child pins so that no other child pins are active
         childPinGroup.clearLayers();
 
+        // loop through all child pins in case of multiple pins.
         for  (pin of cIds){
 
+            // new marker object
             const newMarkerChild = L.marker([cLineups[pin-1].fields.xPos, cLineups[pin-1].fields.yPos], 
             {icon: new LineupIcon({iconUrl: "static/img/abilityIcons/pinImg.png" })}).addTo(childPinGroup);
 
+            // what pops up on click of red pin marker
             newMarkerChild.bindPopup('<iframe style="border-radius: 3%;" src=' + cLineups[pin-1].fields.content + 
             ' width="500" height="315" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>', 
             {keepInView: false,autoPan: false,closeButton: false,maxWidth: 1000});

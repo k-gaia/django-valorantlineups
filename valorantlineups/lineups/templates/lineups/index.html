@@ -1,11 +1,12 @@
-<!DOCTYPE html>
-<html>
+{% extends 'lineups/layout.html' %} 
+
+{% block content %}
 
 <head>
 
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet"> 
-
+  
     <style>
 
         body {
@@ -179,22 +180,22 @@
 
         /* The about link: 20px from the top with a green background */
         #about {
-        top: 425px;
+        top: 405px;
         background-color: #FF4654;
         }
 
         #about:hover {
-        top: 425px;
+        top: 405px;
         background-color: #ff6f7b;
         }
 
         #create {
-        top: 605px;
+        top: 615px;
         background-color: #FF4654; /* Blue */
         }
 
         #create:hover {
-        top: 605px;
+        top: 615px;
         background-color: #ff6f7b;
         }
 
@@ -209,12 +210,12 @@
         }
 
         #contact {
-        top: 485px;
+        top: 475px;
         background-color: #FF4654 /* Light Black */
         }
 
         #contact:hover {
-        top: 485px;
+        top: 475px;
         background-color: #ff6f7b;
         }
 
@@ -254,5 +255,4 @@
 
     </script>
 
-</body>
-</html>
+{% endblock %}

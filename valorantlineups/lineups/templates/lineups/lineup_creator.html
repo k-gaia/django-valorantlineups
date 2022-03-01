@@ -251,6 +251,7 @@
 
         function submitLineup(features, pinName, pinIds){
             
+            // data to submit, grab from lineup creation page
             character = document.getElementById('champs').value
             ability = document.getElementById('abilities').value
             name = pinName
@@ -265,6 +266,7 @@
             createdOn = new Date().toISOString().substring(0, 10)
             //author = get user from django
 
+            // ajax call to submit post request to view, submit data to db
             $.ajax({
                 url: "/lineup_creator",
                 type: "POST",
