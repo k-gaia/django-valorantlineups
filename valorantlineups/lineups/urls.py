@@ -13,6 +13,7 @@ urlpatterns = [
     path('latest_child_id', views.get_latest_childlineup_id, name='get_latest_childlineup_id'),
     path('pin_creator', views.pin_creator, name = 'pin_creator'),
     path('register', views.register_request, name='register'),
-    path('login', views.login_request, name='login')
+    path('login', views.login_request, name='login'),
+    path('logout', views.logout_request, name='logout')
 
 ]

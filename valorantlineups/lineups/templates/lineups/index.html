@@ -199,12 +199,12 @@
         background-color: #ff6f7b;
         }
 
-        #graphs {
+        #login {
         top: 545px;
         background-color: #FF4654; /* Red */
         }
 
-        #graphs:hover {
+        #login:hover {
         top: 545px;
         background-color: #ff6f7b;
         }
@@ -241,7 +241,11 @@
     <div id="mySidenav" class="sidenav">
         <a href="https://github.com/k-gaia/valorantlineups" id="about">About</a>
         <a href="#" id="contact">Contact</a>
-        <a href="graphs" id="graphs">Graphs</a>
+        {% if user.is_authenticated %}
+        <a href="logout" id="login">Logout</a>
+        {% else %}
+        <a href="login" id="login">Login</a>
+        {% endif %}
         <a href="lineup_creator" id="create">Create</a>
     </div> 
     

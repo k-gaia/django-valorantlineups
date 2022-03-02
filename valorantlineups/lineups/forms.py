@@ -24,6 +24,8 @@ class NewChildLineupForm(forms.ModelForm):
 class NewUserForm(UserCreationForm):
     email = forms.EmailField(required=True)
 
+    # specify which model this form respresents, inherit from
+    # built in Django UserCreationForm
     class Meta:
         model = User
         fields = ('username', 'email', 'password1', 'password2')
