@@ -45,7 +45,7 @@ var LineupIcon = L.Icon.extend({
 // change champ function called on button press -> string formatting
 function changeChamp(champSelection){
 
-    /*
+    
     abilityFilter = false;
 
     // change current champ variable
@@ -81,15 +81,15 @@ function changeChamp(champSelection){
     audio.play()
 
     // reset pins each load (change champ)
-    mainPinGroup.clearLayers();
-    childPinGroup.clearLayers();
-    loadPins();*/
+    //mainPinGroup.clearLayers();
+    //childPinGroup.clearLayers();
+    //loadPins();
     
 
     mainPinGroup.clearLayers();
     childPinGroup.clearLayers();
     mapPins(viewedMap, champSelection)
-    console.log(viewedMap + " " + champSelection)
+    //console.log(viewedMap + " " + champSelection)
 
 }
 
