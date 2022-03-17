@@ -21,6 +21,12 @@ def bind(request):
 def haven(request):
     return render(request, 'lineups/haven.html')
 
+def split(request):
+    return render(request, 'lineups/split.html')
+
+def ascent(request):
+    return render(request, 'lineups/ascent.html')
+
 def lineup_creator(request):
 
     # if POST request, save in form object

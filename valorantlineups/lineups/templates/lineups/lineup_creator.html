@@ -295,7 +295,7 @@
 
         function submitPins(_name, _content, _xPos, _yPos){
             name = _name
-            content = _content.replace("'", "")
+            content = _content.replaceAll("'", "")
             xPos = _xPos
             yPos = _yPos
 
