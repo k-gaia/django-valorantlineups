@@ -1,6 +1,6 @@
 from unicodedata import name
 from django.test import TestCase
-from lineups.models import ChildLineup
+from lineups.models import AGENTCLASS_CHOICES, Agent, ChildLineup
 
 # Child Lineup Test Class, Derived from Test Case
 class ChildLineupTestClass(TestCase):
@@ -49,11 +49,19 @@ class ChildLineupTestClass(TestCase):
         childlineup = ChildLineup.objects.get(id=1)
         
         # expected name is of form id - name - content - xpos - ypos
-        expected_object_name = f'{str(childlineup.id)} - \
-        {childlineup.name} - \
-        {childlineup.content} - \
-        {str(childlineup.xPos)} - \
-        {str(childlineup.yPos)}'
+        expected_object_name = f'{str(childlineup.id)} - {childlineup.name} - {childlineup.content} - {str(childlineup.xPos)} - {str(childlineup.yPos)}'
 
         # call the to string method on child lineup object
         self.assertEqual(str(childlineup), expected_object_name)
+
+class AgentTestClass(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        # setup non modified objects used by all test methods
+        # i.e. create an example Child Lineup Entry
+        Agent.objects.create(name='Breach', agentClass='controller')
+    
+    def test_string_return(self):
+        agentexample = Agent.objects.get(id=1)
+        expected_string_value = "Breach - controller"
+        self.assertEqual(str(agentexample), expected_string_value)

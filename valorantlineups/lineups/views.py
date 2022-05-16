@@ -16,7 +16,14 @@ def home(request):
     return render(request, 'lineups/index.html')
 
 def bind(request):
-    return render(request, 'lineups/bind.html')
+
+    context = list(Agent.objects.values())
+
+    #test = {"data": context}
+
+    #print(test["data"][0]["name"])
+
+    return render(request, 'lineups/bind.html', {'data': context})
 
 def haven(request):
     return render(request, 'lineups/haven.html')
@@ -28,6 +35,10 @@ def ascent(request):
     return render(request, 'lineups/ascent.html')
 
 def lineup_creator(request):
+
+    context = list(Map.objects.values())
+
+    #test = {"data": context}
 
     # if POST request, save in form object
     if request.method == 'POST':
@@ -52,7 +63,7 @@ def lineup_creator(request):
     # if not POST request, redirect to lineup_creator page
     else:
 
-        return render(request, 'lineups/lineup_creator.html')
+        return render(request, 'lineups/lineup_creator.html', {'data': context})
 
 def pin_creator(request):
     if request.method == 'POST':
@@ -124,8 +135,6 @@ def login_request(request):
 				login(request, user)
 				messages.info(request, f"You are now logged in as {username}.")
 				return redirect("home")
-			else:
-				messages.error(request,"Invalid username or password.")
 		else:
 			messages.error(request,"Invalid username or password.")
 	form = AuthenticationForm()
@@ -133,7 +142,16 @@ def login_request(request):
 
 def logout_request(request):
 	logout(request)
-	messages.info(request, "You have successfully logged out.") 
+	messages.info(request, "You have successfully logged out.")  
 	return redirect("home")
+
+def agents_list(request):
+    #agents = Agent.objects.values_list('name', flat=True)
+    #print(list(agents))
+    #return JsonResponse({"Agents": list(agents)})
+
+    agents = list(Agent.objects.values())
+
+    return JsonResponse(agents, safe=False)
 
     

@@ -5,7 +5,8 @@
 <head>
 
     <meta content="width=device-width, initial-scale=1" name="viewport" />
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet">
+    <title>Valorant Lineups</title> 
   
     <style>
 
@@ -226,17 +227,17 @@
 
 <body>
 
-    <img id='logo' src='static/img/logo/vlineups.svg'>
+    <img id='logo' src='static/img/logo/vlineups.svg' alt="Valorant Lineups Logo">
 
     <img id='champBanner' src='' style="float: right;">
 
     <!-- Maps -->
 
     <div id="cover">
-        <a href='bind'><img src="static/img/maps/thumbs/Bind_Map.png"></a>
-        <a href='./haven'><img src="static/img/maps/thumbs/Haven_Map.png"></a>
-        <a href='./split'><img src="static/img/maps/thumbs/Split_Map.png" style="-webkit-box-reflect: below 10px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(20%, transparent) , to(rgba(250, 250, 250, 0.1)));"></a>
-        <a href='./ascent'><img src="static/img/maps/thumbs/Ascent_Map.png" style="-webkit-box-reflect: below 10px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(20%, transparent) , to(rgba(250, 250, 250, 0.1)));"></a>
+        <a href='bind'><img src="static/img/maps/thumbs/Bind_Map.webp" alt="Bind Map Image"></a>
+        <a href='./haven'><img src="static/img/maps/thumbs/Haven_Map.webp" alt="Haven Map Image"></a>
+        <a href='./split'><img src="static/img/maps/thumbs/Split_Map.webp" alt="Split Map Image" style="-webkit-box-reflect: below 10px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(20%, transparent) , to(rgba(250, 250, 250, 0.1)));"></a>
+        <a href='./ascent'><img src="static/img/maps/thumbs/Ascent_Map.webp" alt="Ascent Map Image" style="-webkit-box-reflect: below 10px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(20%, transparent) , to(rgba(250, 250, 250, 0.1)));"></a>
     </div>
 
     <div id="mySidenav" class="sidenav">
@@ -252,11 +253,34 @@
     
     <script>
 
-        var champs = ['Breach', 'Brimstone', 'Cypher', 'Jett', 'Omen', 'Phoenix', 'Raze', 'Reyna', 'Sage', 'Sova', 'Viper'];
+        function setChamps(data){
 
-        document.getElementById('champBanner').src = 'static/img/champBanners/' + champs[Math.floor(Math.random() * champs.length)] + '_artwork.webp';
+        data = JSON.parse(data);
 
-        console.log(document.getElementById('champBanner').src);
+        console.log(data)
+
+        agent_choice = data[Math.floor(Math.random() * data.length)]
+
+        console.log(agent_choice);
+
+        //document.getElementById('champBanner').src = "media/img/banners/Sage_artwork.webp";
+        //document.getElementById('champBanner').src = "media/img/banners/" + agent_choice + "_artwork.webp";
+        document.getElementById('champBanner').src = "media/" + agent_choice["banner_image"]
+
+
+        }
+
+        
+        async function getAgents(){
+        await $.ajax({
+                url: '/agents_list' ,
+                dataType: "html",
+                type: "GET",
+                success: setChamps,
+            })
+        };
+
+    getAgents();
 
     </script>
 

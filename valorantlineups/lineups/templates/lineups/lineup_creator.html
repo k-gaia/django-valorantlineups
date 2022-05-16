@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+{% extends 'lineups/layout.html' %} 
+
+{% block content %}
 <html>
 
     <head>  
@@ -26,11 +28,19 @@
     <ul id="mapmenu">
         <li>
             <ul class="hidden"></ul>
+            <!--
                 <li><button onclick="changeMap('Bind')">Bind</button></li>
                 <li><button onclick="changeMap('Haven')">Haven</button></li>
                 <li><button onclick="changeMap('Split')">Split</button></li>
                 <li><button onclick="changeMap('Ascent')">Ascent</button></li>
+            -->
+                {% for map in data %}
+                <li><button onclick="changeMap('{{map.name}}')">{{map.name}}</button></li>
+                {% endfor %}
+
             </ul>
+
+            
         </li>
     </ul>
 
@@ -61,7 +71,7 @@
 
     var drawingPins = false;
     
-    var image = L.imageOverlay('static/img/maps/Bind_Top_Down_View_up.png', bounds).addTo(map);
+    var image = L.imageOverlay('media/img/maps/Bind_Top_Down_View_up.png', bounds).addTo(map);
 
     // enable draw function to flip boolean
     function enableDraw(){
@@ -105,7 +115,7 @@
         map.removeLayer(image);
 
         // the map image
-        image = L.imageOverlay('static/img/maps/' + mapRadio + '_Top_Down_View_up.png', bounds).addTo(map);
+        image = L.imageOverlay('media/img/maps/' + mapRadio + '_Top_Down_View_up.png', bounds).addTo(map);
 
         
     }
@@ -317,6 +327,4 @@
     getLatestPin();                 
 
     </script>
-    </body>
-
-</html>
+{% endblock %}

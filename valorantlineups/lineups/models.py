@@ -1,5 +1,8 @@
 from sys import maxsize
 from django.db import models
+import json
+
+from django.forms import FileField, ImageField
 
 # Choice Variables
 con = "CONTROLLER"
@@ -26,8 +29,35 @@ class Agent(models.Model):
     eAbility = models.CharField(max_length=30)
     xAbility = models.CharField(max_length=30)
     
+    #abilities = models.CharField()
+    #ability_list = []
+    #for ability in abilities:
+    #   ability_list.append(ability)
+
+
+    #abilities_field = models.JSONField(json.dumps(abilities))
+
+    # NB: must implement media_root folders 
+    # https://stackoverflow.com/questions/34796211/django-imagefield-path-to-static-file-in-django
+
+    # clean structure and code first before reworking agent/map models
+    banner_image = models.FileField(upload_to = 'img/banners/')
+    mugshot_image = models.ImageField(upload_to = 'img/icons/', blank=True)
+    select_sound = models.FileField(upload_to = f'sfx/{name}/', blank=True )
+
+    #listfield = models.
+
+    # champ banner image
+    # champ mugshot image
+    # champ sounds
+    # champ abilities
+    # champ ability icons
+    
     def __str__(self):
         return self.name + " - " + self.agentClass
+
+    # def get total agents
+
 
 class Agents(models.TextChoices):
     ASTRA = 'Astra'
@@ -87,4 +117,8 @@ class ChildLineup(models.Model):
 
 class Map(models.Model):
     name = models.CharField(max_length=32)
-    numLineups = models.IntegerField()
+    num_lineups = models.IntegerField()
+    map_image = models.FileField(upload_to = 'img/maps/')
+
+    def __str__(self):
+        return str(self.id) + " - " + self.name + " - " + str(self.num_lineups)

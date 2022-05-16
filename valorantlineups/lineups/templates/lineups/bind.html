@@ -45,6 +45,48 @@
                 }
             }
 
+        var agents;
+
+        function setAgents(data, agents){
+
+            agents = data
+
+        }
+
+        function get_agents(){
+            return new Promise((resolve, reject) => {
+
+                $.ajax({
+                    url: '/agents_list',
+                    datatype: 'json',
+                    type: 'GET',
+                    data: {key: 'value',},
+                    success: function (data){
+                        resolve(data)
+                    },
+                    error: function (error){
+                        reject(error)
+                    }
+                })
+            })
+        }
+
+        get_agents()
+            .then((data) => {
+
+                agents = data
+                //console.log(data)
+                //setAgents(data, agents)
+                console.log(agents)
+
+            })
+            .catch((error) =>{
+
+                console.log(error)
+
+            })
+    
+        
 
         </script>
 
@@ -56,17 +98,11 @@
             <li>
                 <a href="#">Agents</a>
                 <ul class="hidden">
-                    <li><button onclick="changeChamp('Breach')">Breach</button></li>
-                    <li><button onclick="changeChamp('Brimstone')">Brimstone</button></li>
-                    <li><button onclick="changeChamp('Cypher')">Cypher</button></li>
-                    <li><button onclick="changeChamp('Jett')">Jett</button></li>
-                    <li><button onclick="changeChamp('Omen')">Omen</button></li>
-                    <li><button onclick="changeChamp('Phoenix')">Phoenix</button></li>
-                    <li><button onclick="changeChamp('Raze')">Raze</button></li>
-                    <li><button onclick="changeChamp('Reyna')">Reyna</button></li>
-                    <li><button onclick="changeChamp('Sage')">Sage</button></li>
-                    <li><button onclick="changeChamp('Sova')">Sova</button></li>
-                    <li><button onclick="changeChamp('Viper')">Viper</button></li>
+
+                    
+                    {% for agent in data %}
+                    <li><button onclick="changeChamp('{{agent.name}}')">{{agent.name}}</button></li>
+                    {% endfor %}
                 </ul>
             </li>
 
